@@ -1,5 +1,6 @@
 import Link from "next/link"
 import { Plus } from "lucide-react"
+import ServiceActions from "@/app/Components/dashboard/ServiceActions"
 import { requireRole } from "@/lib/session"
 import { getAllServices } from "@/lib/services"
 
@@ -13,11 +14,11 @@ export default async function ManageServicesPage() {
   const services = await getAllServices()
 
   return (
-    <div className="mx-auto max-w-5xl space-y-6">
+    <div className="space-y-6">
       {/* Heading + Add button */}
       <div className="flex flex-wrap items-center justify-between gap-4">
         <div>
-          <p className="text-xs font-semibold uppercase tracking-[0.2em] text-amber-500">
+          <p className="text-xs font-semibold tracking-[0.2em] text-amber-500 uppercase">
             Admin / Services
           </p>
           <h1 className="mt-1 text-2xl font-bold text-white sm:text-3xl">
@@ -37,19 +38,20 @@ export default async function ManageServicesPage() {
       {/* Services table */}
       {services.length === 0 ? (
         <p className="rounded-2xl border border-dashed border-zinc-700 p-10 text-center text-sm text-zinc-400">
-          No services yet. Click &quot;Add New Service&quot; to create the
-          first one.
+          No services yet. Click &quot;Add New Service&quot; to create the first
+          one.
         </p>
       ) : (
         <div className="overflow-x-auto rounded-2xl border border-zinc-800 bg-zinc-900">
           <table className="w-full text-left text-sm">
-            <thead className="border-b border-zinc-800 text-xs uppercase text-zinc-400">
+            <thead className="border-b border-zinc-800 text-xs text-zinc-400 uppercase">
               <tr>
                 <th className="px-4 py-3">Service</th>
                 <th className="px-4 py-3">Category</th>
                 <th className="px-4 py-3">Price</th>
                 <th className="px-4 py-3">Duration</th>
                 <th className="px-4 py-3">Status</th>
+                <th className="px-4 py-3">Actions</th>
               </tr>
             </thead>
             <tbody>
@@ -88,6 +90,13 @@ export default async function ManageServicesPage() {
                     >
                       {service.status}
                     </span>
+                  </td>
+                  <td className="px-4 py-3">
+                    <ServiceActions
+                      id={service.id}
+                      name={service.serviceName}
+                      status={service.status}
+                    />
                   </td>
                 </tr>
               ))}

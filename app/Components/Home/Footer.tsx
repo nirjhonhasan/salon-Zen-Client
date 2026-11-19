@@ -1,109 +1,132 @@
-import Link from "next/link";
-import { 
-  MapPin, 
-  Phone, 
-  Mail, 
-  Clock, 
-  Globe, 
-  Share2, 
-  MessageCircle 
-} from "lucide-react";
+import Image from "next/image"
+import Link from "next/link"
+import { Clock, Mail, MapPin, Phone } from "lucide-react"
+
+const quickLinks = [
+  { title: "Home", href: "/" },
+  { title: "Browse Services", href: "/services" },
+  { title: "Sign In", href: "/sign-in" },
+  { title: "Sign Up", href: "/sign-up" },
+]
+
+const socialLinks = [
+  { title: "Facebook", href: "https://facebook.com" },
+  { title: "Instagram", href: "https://instagram.com" },
+  { title: "Twitter", href: "https://twitter.com" },
+]
+
+// Small heading used by every footer column.
+function ColumnTitle({ children }: { children: string }) {
+  return <h3 className="mb-4 text-base font-semibold text-white">{children}</h3>
+}
 
 export default function Footer() {
   return (
-    <footer className="bg-zinc-950 text-zinc-300 border-t w-full border-zinc-800 pt-16 pb-8">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-10 mb-12">
-          
-          {/* Column 1: Logo & Description */}
-          <div className="space-y-4">
-            <div className="flex items-center space-x-2">
-              <span className="text-2xl font-bold text-amber-500 tracking-wider">
-                SalonZen
+    <footer className="w-full border-t border-zinc-800 bg-zinc-950 text-zinc-400">
+      <div className="mx-auto max-w-7xl px-4 py-14 sm:px-6 lg:px-8">
+        <div className="grid gap-10 sm:grid-cols-2 lg:grid-cols-4">
+          {/* 1. Logo, short description and social links */}
+          <div>
+            <Link href="/" className="flex items-center gap-3">
+              <span className="relative block h-10 w-10 overflow-hidden rounded-full bg-zinc-900">
+                <Image
+                  src="/logo.webp"
+                  alt="SalonBook logo"
+                  fill
+                  sizes="40px"
+                  className="object-cover"
+                />
               </span>
-            </div>
-            <p className="text-sm text-zinc-400 leading-relaxed">
-              Your premier destination for luxury salon services. Look beautiful, feel amazing with our expert styling and care.
+              <span className="text-xl font-bold text-white">
+                Salon<span className="text-amber-500">Book</span>
+              </span>
+            </Link>
+
+            <p className="mt-4 text-sm leading-relaxed">
+              Book hair, skin and beauty treatments online. Pick a service,
+              choose a time, and we will take care of the rest.
             </p>
-            <div className="flex space-x-4 pt-2">
-              <a href="https://facebook.com" target="_blank" rel="noreferrer" className="w-9 h-9 rounded-full bg-zinc-900 border border-zinc-800 flex items-center justify-center text-zinc-400 hover:text-amber-500 hover:border-amber-500 transition" title="Facebook">
-                <Globe className="w-4 h-4" />
-              </a>
-              <a href="https://instagram.com" target="_blank" rel="noreferrer" className="w-9 h-9 rounded-full bg-zinc-900 border border-zinc-800 flex items-center justify-center text-zinc-400 hover:text-amber-500 hover:border-amber-500 transition" title="Instagram">
-                <Share2 className="w-4 h-4" />
-              </a>
-              <a href="https://twitter.com" target="_blank" rel="noreferrer" className="w-9 h-9 rounded-full bg-zinc-900 border border-zinc-800 flex items-center justify-center text-zinc-400 hover:text-amber-500 hover:border-amber-500 transition" title="Twitter">
-                <MessageCircle className="w-4 h-4" />
-              </a>
+
+            <div className="mt-4 flex flex-wrap gap-2">
+              {socialLinks.map((item) => (
+                <a
+                  key={item.title}
+                  href={item.href}
+                  target="_blank"
+                  rel="noreferrer"
+                  className="rounded-full border border-zinc-800 px-3 py-1 text-xs transition hover:border-amber-500 hover:text-amber-500"
+                >
+                  {item.title}
+                </a>
+              ))}
             </div>
           </div>
 
-          {/* Column 2: Important Links */}
-          <div className="space-y-4">
-            <h3 className="text-lg font-semibold text-white">Quick Links</h3>
+          {/* 2. Navigation links */}
+          <div>
+            <ColumnTitle>Quick Links</ColumnTitle>
             <ul className="space-y-2 text-sm">
-              <li>
-                <Link href="/" className="hover:text-amber-500 transition">Home</Link>
-              </li>
-              <li>
-                <Link href="/services" className="hover:text-amber-500 transition">Browse Services</Link>
-              </li>
-              <li>
-                <Link href="/sign-in" className="hover:text-amber-500 transition">Sign In</Link>
-              </li>
-              <li>
-                <Link href="/sign-up" className="hover:text-amber-500 transition">Sign Up</Link>
-              </li>
+              {quickLinks.map((item) => (
+                <li key={item.href}>
+                  <Link
+                    href={item.href}
+                    className="transition hover:text-amber-500"
+                  >
+                    {item.title}
+                  </Link>
+                </li>
+              ))}
             </ul>
           </div>
 
-          {/* Column 3: Contact Info */}
-          <div className="space-y-4">
-            <h3 className="text-lg font-semibold text-white">Contact Us</h3>
-            <ul className="space-y-3 text-sm text-zinc-400">
-              <li className="flex items-start space-x-3">
-                <MapPin className="w-5 h-5 text-amber-500 shrink-0 mt-0.5" />
+          {/* 3. Contact information and address */}
+          <div>
+            <ColumnTitle>Contact Us</ColumnTitle>
+            <ul className="space-y-3 text-sm">
+              <li className="flex items-start gap-3">
+                <MapPin className="mt-0.5 h-4 w-4 shrink-0 text-amber-500" />
                 <span>123 Salon Avenue, Gulshan, Dhaka, Bangladesh</span>
               </li>
-              <li className="flex items-center space-x-3">
-                <Phone className="w-5 h-5 text-amber-500 shrink-0" />
+              <li className="flex items-center gap-3">
+                <Phone className="h-4 w-4 shrink-0 text-amber-500" />
                 <span>+880 1234-567890</span>
               </li>
-              <li className="flex items-center space-x-3">
-                <Mail className="w-5 h-5 text-amber-500 shrink-0" />
-                <span>support@salonzen.com</span>
+              <li className="flex items-center gap-3">
+                <Mail className="h-4 w-4 shrink-0 text-amber-500" />
+                <span>support@salonbook.com</span>
               </li>
             </ul>
           </div>
 
-          {/* Column 4: Opening Hours */}
-          <div className="space-y-4">
-            <h3 className="text-lg font-semibold text-white">Opening Hours</h3>
-            <ul className="space-y-3 text-sm text-zinc-400">
-              <li className="flex items-start space-x-3">
-                <Clock className="w-5 h-5 text-amber-500 shrink-0 mt-0.5" />
+          {/* 4. Opening hours */}
+          <div>
+            <ColumnTitle>Opening Hours</ColumnTitle>
+            <ul className="space-y-3 text-sm">
+              <li className="flex items-start gap-3">
+                <Clock className="mt-0.5 h-4 w-4 shrink-0 text-amber-500" />
                 <div>
-                  <p className="text-white font-medium">Saturday - Thursday</p>
+                  <p className="font-medium text-zinc-200">
+                    Saturday - Thursday
+                  </p>
                   <p>10:00 AM - 9:00 PM</p>
                 </div>
               </li>
-              <li className="flex items-start space-x-3">
-                <Clock className="w-5 h-5 text-amber-500 shrink-0 mt-0.5" />
+              <li className="flex items-start gap-3">
+                <Clock className="mt-0.5 h-4 w-4 shrink-0 text-amber-500" />
                 <div>
-                  <p className="text-white font-medium">Friday</p>
+                  <p className="font-medium text-zinc-200">Friday</p>
                   <p>3:00 PM - 10:00 PM</p>
                 </div>
               </li>
             </ul>
           </div>
-
         </div>
 
-        {/* Bottom Copyright Section */}
-        <div className="border-t border-zinc-900 pt-8 mt-8 text-center text-sm text-zinc-500">
-          <p>© {new Date().getFullYear()} SalonZen. All rights reserved. Built with Next.js & Tailwind CSS.</p>
+        {/* Copyright */}
+        <div className="mt-10 border-t border-zinc-900 pt-6 text-center text-sm text-zinc-500">
+          © {new Date().getFullYear()} SalonBook. All rights reserved.
         </div>
       </div>
     </footer>
-  );
+  )
 }

@@ -1,10 +1,12 @@
 "use client"
 
 import { useState } from "react"
-import { ImagePlus, Loader2, Plus } from "lucide-react"
+import { useRouter } from "next/navigation"
+import { ImagePlus, Loader2, Plus, Save } from "lucide-react"
+import { toast } from "sonner"
+import { callServer } from "@/lib/api"
 import { uploadImageToImgBB } from "@/lib/imgbb"
-
-const API_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:5000"
+import type { Service } from "@/lib/services"
 
 const categories = [
   "Haircut & Styling",
@@ -20,20 +22,29 @@ const categories = [
 const inputClass =
   "w-full rounded-xl border border-zinc-800 bg-zinc-950 px-4 py-2.5 text-sm text-zinc-100 placeholder:text-zinc-600 focus:border-amber-500 focus:outline-none"
 
-export default function AddServiceForm() {
-  // One state value for each form field.
-  const [serviceName, setServiceName] = useState("")
-  const [category, setCategory] = useState(categories[0])
-  const [price, setPrice] = useState("")
-  const [duration, setDuration] = useState("")
-  const [description, setDescription] = useState("")
-  const [status, setStatus] = useState("active")
-  const [imageFile, setImageFile] = useState<File | null>(null)
-  const [preview, setPreview] = useState("")
+// This one form is used twice:
+// - Add page: no "service" is passed, so the form starts empty.
+// - Edit page: the "service" is passed, so the form starts filled in.
+export default function ServiceForm({
+  service,
+}: {
+  service?: Service & { status: string }
+}) {
+  const router = useRouter()
+  const isEditing = Boolean(service)
 
+  // One state value for each form field.
+  const [serviceName, setServiceName] = useState(service?.serviceName ?? "")
+  const [category, setCategory] = useState(service?.category ?? categories[0])
+  const [price, setPrice] = useState(service ? String(service.price) : "")
+  const [duration, setDuration] = useState(
+    service ? String(service.duration) : ""
+  )
+  const [description, setDescription] = useState(service?.description ?? "")
+  const [status, setStatus] = useState(service?.status ?? "active")
+  const [imageFile, setImageFile] = useState<File | null>(null)
+  const [preview, setPreview] = useState(service?.image ?? "")
   const [loading, setLoading] = useState(false)
-  const [error, setError] = useState("")
-  const [success, setSuccess] = useState("")
 
   // Show a small preview when the admin picks an image.
   function handleImageChange(event: React.ChangeEvent<HTMLInputElement>) {
@@ -47,67 +58,51 @@ export default function AddServiceForm() {
 
   async function handleSubmit(event: React.FormEvent<HTMLFormElement>) {
     event.preventDefault()
-    setError("")
-    setSuccess("")
 
-    // Check the form before sending anything.
-    if (!imageFile) {
-      setError("Please choose a service image.")
+    // A new service must have an image. When editing, the old image is kept.
+    if (!imageFile && !service) {
+      toast.error("Please choose a service image.")
       return
     }
 
     if (Number(price) <= 0 || Number(duration) <= 0) {
-      setError("Price and duration must be more than 0.")
+      toast.error("Price and duration must be more than 0.")
       return
     }
 
     setLoading(true)
 
     try {
-      // 1. Upload the image and get its link.
-      const imageUrl = await uploadImageToImgBB(imageFile)
-
-      // 2. Get a token that proves we are logged in.
-      const tokenResponse = await fetch("/api/token")
-      if (!tokenResponse.ok) {
-        throw new Error("Please sign in again.")
-      }
-      const { token } = await tokenResponse.json()
-
-      // 3. Send the service to the Express server.
-      const response = await fetch(`${API_URL}/services`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`,
-        },
-        body: JSON.stringify({
-          serviceName,
-          category,
-          description,
-          price: Number(price),
-          duration: Number(duration),
-          image: imageUrl,
-          status,
-        }),
-      })
-
-      const data = await response.json()
-
-      if (!response.ok) {
-        throw new Error(data.message || "Could not add the service.")
+      // 1. Upload a new image if one was chosen, otherwise keep the old one.
+      let imageUrl = service?.image ?? ""
+      if (imageFile) {
+        imageUrl = await uploadImageToImgBB(imageFile)
       }
 
-      // 4. Clear the form for the next service.
-      setSuccess("Service added successfully.")
-      setServiceName("")
-      setPrice("")
-      setDuration("")
-      setDescription("")
-      setImageFile(null)
-      setPreview("")
+      // 2. Send the data to the Express server.
+      const serviceData = {
+        serviceName,
+        category,
+        description,
+        price: Number(price),
+        duration: Number(duration),
+        image: imageUrl,
+        status,
+      }
+
+      if (service) {
+        await callServer(`/services/${service.id}`, "PUT", serviceData)
+        toast.success("Service updated.")
+        router.push("/dashboard/admin/services")
+        router.refresh()
+      } else {
+        await callServer("/services", "POST", serviceData)
+        toast.success("Service added.")
+        router.push("/dashboard/admin/services")
+        router.refresh()
+      }
     } catch (err) {
-      setError(err instanceof Error ? err.message : "Something went wrong.")
+      toast.error(err instanceof Error ? err.message : "Something went wrong.")
     } finally {
       setLoading(false)
     }
@@ -118,18 +113,6 @@ export default function AddServiceForm() {
       onSubmit={handleSubmit}
       className="space-y-6 rounded-2xl border border-zinc-800 bg-zinc-900 p-6 sm:p-8"
     >
-      {error && (
-        <p className="rounded-xl border border-red-500/30 bg-red-500/10 px-4 py-3 text-sm text-red-400">
-          {error}
-        </p>
-      )}
-
-      {success && (
-        <p className="rounded-xl border border-emerald-500/30 bg-emerald-500/10 px-4 py-3 text-sm text-emerald-400">
-          {success}
-        </p>
-      )}
-
       {/* Basic details */}
       <div className="grid gap-5 sm:grid-cols-2">
         <div className="space-y-1.5">
@@ -205,7 +188,11 @@ export default function AddServiceForm() {
             <p className="text-zinc-200">
               {imageFile ? imageFile.name : "Click to choose an image"}
             </p>
-            <p className="text-xs text-zinc-500">PNG or JPG</p>
+            <p className="text-xs text-zinc-500">
+              {isEditing
+                ? "Leave empty to keep the current image"
+                : "PNG or JPG"}
+            </p>
           </div>
           <input
             type="file"
@@ -249,6 +236,11 @@ export default function AddServiceForm() {
           <>
             <Loader2 className="h-4 w-4 animate-spin" />
             Saving...
+          </>
+        ) : isEditing ? (
+          <>
+            <Save className="h-4 w-4" />
+            Save Changes
           </>
         ) : (
           <>

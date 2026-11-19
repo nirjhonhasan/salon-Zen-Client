@@ -8,7 +8,7 @@ export default function Banner() {
       <div className="absolute inset-0 z-0">
         <Image
           src="/banner_bg.webp" 
-          alt="SalonZen Luxury Experience"
+          alt="SalonBook Luxury Experience"
           fill
           priority
           className="object-cover object-center"
@@ -33,7 +33,7 @@ export default function Banner() {
 
           {/* সাবটাইটেল বা ডেসক্রিপশন */}
           <p className="text-base sm:text-lg text-zinc-300 max-w-xl font-light leading-relaxed">
-            Book your favorite salon services easily with SalonZen. Hair, Skin, Beauty & More — All in One Place.
+            Book your favorite salon services easily with SalonBook. Hair, Skin, Beauty & More — All in One Place.
           </p>
 
           {/* সার্চ এবং লোকেশন ফিল্টার বক্স */}

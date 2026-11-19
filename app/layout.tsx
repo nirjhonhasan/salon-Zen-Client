@@ -1,6 +1,7 @@
 import { Cormorant_Garamond, Manrope } from "next/font/google"
 import "./globals.css"
 import { ThemeProvider } from "@/components/theme-provider"
+import { Toaster } from "@/components/ui/sonner"
 import { cn } from "@/lib/utils"
 
 const headingFont = Cormorant_Garamond({
@@ -26,7 +27,10 @@ export default function RootLayout({
       className={cn("antialiased", headingFont.variable, bodyFont.variable)}
     >
       <body className="bg-zinc-950 font-sans text-zinc-100">
-        <ThemeProvider>{children}</ThemeProvider>
+        <ThemeProvider>
+          {children}
+          <Toaster />
+        </ThemeProvider>
       </body>
     </html>
   )

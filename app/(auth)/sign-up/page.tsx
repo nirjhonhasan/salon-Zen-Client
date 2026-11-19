@@ -103,7 +103,7 @@ const SignupPage = () => {
       <Card className="w-full max-w-md bg-zinc-900 border-zinc-800 text-zinc-100">
         <CardHeader className="text-center space-y-1">
           <CardTitle className="text-3xl font-bold text-amber-500">
-            SalonZen
+            SalonBook
           </CardTitle>
           <CardDescription className="text-zinc-400">
             Create your customer account to book salon services

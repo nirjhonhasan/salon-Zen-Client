@@ -2,7 +2,7 @@
 
 import Link from "next/link"
 import { usePathname } from "next/navigation"
-import { Scissors } from "lucide-react"
+import Image from "next/image"
 import {
   Sidebar,
   SidebarContent,
@@ -26,18 +26,24 @@ export default function DashboardSideBar({ user }: { user: SessionUser }) {
       {/* Brand */}
       <SidebarHeader className="border-b border-zinc-800/80 px-5 py-5">
         <Link href="/" className="flex items-center gap-2.5">
-          <span className="flex h-9 w-9 items-center justify-center rounded-full bg-amber-500 text-zinc-950">
-            <Scissors className="h-4 w-4" />
+          <span className="relative block h-10 w-10 overflow-hidden rounded-full bg-zinc-900">
+            <Image
+              src="/logo.webp"
+              alt="SalonBook logo"
+              fill
+              sizes="40px"
+              className="object-cover"
+            />
           </span>
-          <span className="text-lg font-bold tracking-wide text-amber-500">
-            SalonZen
+          <span className="text-xl font-bold tracking-wide text-white">
+            Salon<span className="text-amber-500">Book</span>
           </span>
         </Link>
       </SidebarHeader>
 
       {/* Role based links */}
       <SidebarContent className="px-3 py-5">
-        <p className="mb-2 px-2 text-[11px] font-semibold uppercase tracking-wider text-zinc-500">
+        <p className="mb-2 px-2 text-[11px] font-semibold tracking-wider text-zinc-500 uppercase">
           {role === "admin" ? "Admin Panel" : "Customer Panel"}
         </p>
 
@@ -69,10 +75,8 @@ export default function DashboardSideBar({ user }: { user: SessionUser }) {
       {/* User + sign out */}
       <SidebarFooter className="border-t border-zinc-800/80 p-4">
         <div className="mb-3 px-2">
-          <p className="truncate text-sm font-medium text-white">
-            {user.name}
-          </p>
-          <p className="truncate text-xs capitalize text-zinc-500">
+          <p className="truncate text-sm font-medium text-white">{user.name}</p>
+          <p className="truncate text-xs text-zinc-500 capitalize">
             Role: {role}
           </p>
         </div>

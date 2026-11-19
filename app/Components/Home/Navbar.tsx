@@ -18,7 +18,7 @@ export default async function Navbar() {
           <span className="relative block h-10 w-10 overflow-hidden rounded-full bg-zinc-900">
             <Image
               src="/logo.webp"
-              alt="SalonZen logo"
+              alt="SalonBook logo"
               fill
               sizes="40px"
               priority
@@ -26,7 +26,7 @@ export default async function Navbar() {
             />
           </span>
           <span className="text-2xl font-bold tracking-wide text-white">
-            Salon<span className="text-amber-500">Zen</span>
+            Salon<span className="text-amber-500">Book</span>
           </span>
         </Link>
 

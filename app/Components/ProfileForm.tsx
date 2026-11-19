@@ -3,6 +3,7 @@
 import { useState } from "react"
 import { useRouter } from "next/navigation"
 import { Upload } from "lucide-react"
+import { toast } from "sonner"
 import { authClient } from "@/lib/auth-client"
 import { uploadImageToImgBB } from "@/lib/imgbb"
 import { Button } from "@/components/ui/button"
@@ -18,16 +19,12 @@ export default function ProfileForm({ user }: { user: SessionUser }) {
   const [preview, setPreview] = useState(user.image || "")
   const [isUploading, setIsUploading] = useState(false)
   const [isSaving, setIsSaving] = useState(false)
-  const [message, setMessage] = useState("")
-  const [error, setError] = useState("")
 
   // 1. Pick a file -> upload to ImgBB -> keep the public URL
   async function handleImageChange(event: React.ChangeEvent<HTMLInputElement>) {
     const file = event.target.files?.[0]
     if (!file) return
 
-    setError("")
-    setMessage("")
     setIsUploading(true)
 
     try {
@@ -35,7 +32,7 @@ export default function ProfileForm({ user }: { user: SessionUser }) {
       setImage(url)
       setPreview(url)
     } catch (uploadError) {
-      setError(
+      toast.error(
         uploadError instanceof Error ? uploadError.message : "Upload failed"
       )
     } finally {
@@ -46,11 +43,9 @@ export default function ProfileForm({ user }: { user: SessionUser }) {
   // 2. Save the name + image with BetterAuth
   async function handleSubmit(event: React.FormEvent<HTMLFormElement>) {
     event.preventDefault()
-    setError("")
-    setMessage("")
 
     if (name.trim().length < 2) {
-      setError("Name must be at least 2 characters")
+      toast.error("Name must be at least 2 characters")
       return
     }
 
@@ -62,12 +57,12 @@ export default function ProfileForm({ user }: { user: SessionUser }) {
     })
 
     if (updateError) {
-      setError(updateError.message || "Could not save your profile")
+      toast.error(updateError.message || "Could not save your profile")
       setIsSaving(false)
       return
     }
 
-    setMessage("Profile updated")
+    toast.success("Profile updated")
     setIsSaving(false)
     router.refresh()
   }
@@ -75,19 +70,11 @@ export default function ProfileForm({ user }: { user: SessionUser }) {
   return (
     <form
       onSubmit={handleSubmit}
-      className="space-y-6 rounded-2xl border border-zinc-800 bg-zinc-900 p-6"
+      className="space-y-6 rounded-3xl border border-amber-500/20 bg-zinc-900 p-6 sm:p-8"
     >
-      {error && (
-        <p className="rounded-lg border border-red-500/40 bg-red-500/10 p-3 text-sm text-red-400">
-          {error}
-        </p>
-      )}
-
-      {message && (
-        <p className="rounded-lg border border-emerald-500/40 bg-emerald-500/10 p-3 text-sm text-emerald-400">
-          {message}
-        </p>
-      )}
+      <h2 className="font-[family-name:var(--font-heading)] text-3xl font-semibold text-white">
+        Edit Details
+      </h2>
 
       {/* Avatar + upload */}
       <div className="flex items-center gap-4">
@@ -155,23 +142,6 @@ export default function ProfileForm({ user }: { user: SessionUser }) {
         <p className="text-xs text-zinc-500">
           Your email is used to sign in, so it cannot be changed here.
         </p>
-      </div>
-
-      {/* Role + status */}
-      <div className="flex flex-wrap gap-2">
-        <span className="rounded-full bg-amber-500/10 px-3 py-1 text-xs font-semibold capitalize text-amber-500">
-          {user.role || "customer"}
-        </span>
-
-        <span
-          className={`rounded-full px-3 py-1 text-xs font-semibold ${
-            user.isBlocked
-              ? "bg-red-500/10 text-red-400"
-              : "bg-emerald-500/10 text-emerald-400"
-          }`}
-        >
-          {user.isBlocked ? "Blocked" : "Active"}
-        </span>
       </div>
 
       <Button

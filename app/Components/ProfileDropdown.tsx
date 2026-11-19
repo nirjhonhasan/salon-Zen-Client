@@ -1,7 +1,7 @@
 "use client"
 
 import Link from "next/link"
-import { LayoutDashboard, User } from "lucide-react"
+import { ChevronDown, LayoutDashboard, User } from "lucide-react"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import {
   Popover,
@@ -20,17 +20,45 @@ function getInitials(name: string) {
     .toUpperCase()
 }
 
-// The round avatar in the navbar. Clicking it opens a small menu.
-export default function ProfileDropdown({ user }: { user: SessionUser }) {
+// The profile button. Clicking it opens a small menu.
+// showName = true  -> a pill with avatar + name (public navbar)
+// showName = false -> just the round avatar (dashboard header)
+export default function ProfileDropdown({
+  user,
+  showName = false,
+}: {
+  user: SessionUser
+  showName?: boolean
+}) {
   return (
     <Popover>
-      <PopoverTrigger className="rounded-full ring-2 ring-transparent transition hover:ring-amber-500/60 focus-visible:outline-none focus-visible:ring-amber-500">
-        <Avatar size="lg">
+      <PopoverTrigger
+        className={
+          showName
+            ? "flex items-center gap-3 rounded-full border border-amber-500/30 bg-zinc-900/70 py-1 pr-4 pl-1 transition hover:border-amber-500 focus-visible:outline-none"
+            : "rounded-full ring-2 ring-transparent transition hover:ring-amber-500/60 focus-visible:ring-amber-500 focus-visible:outline-none"
+        }
+      >
+        <Avatar size="lg" className={showName ? "ring-2 ring-amber-500" : ""}>
           <AvatarImage src={user.image || undefined} alt={user.name} />
           <AvatarFallback className="bg-zinc-800 font-semibold text-amber-500">
             {getInitials(user.name)}
           </AvatarFallback>
         </Avatar>
+
+        {showName && (
+          <>
+            <span className="hidden text-left leading-tight lg:block">
+              <span className="block text-[10px] font-semibold tracking-[0.2em] text-amber-500 uppercase">
+                Welcome
+              </span>
+              <span className="block max-w-32 truncate font-[family-name:var(--font-heading)] text-lg font-semibold text-white">
+                {user.name}
+              </span>
+            </span>
+            <ChevronDown className="h-4 w-4 text-zinc-400" />
+          </>
+        )}
       </PopoverTrigger>
 
       <PopoverContent
@@ -38,12 +66,12 @@ export default function ProfileDropdown({ user }: { user: SessionUser }) {
         className="w-64 rounded-xl border border-zinc-800 bg-zinc-900 p-2 text-zinc-100 shadow-2xl"
       >
         {/* Who is logged in */}
-        <div className="border-b border-zinc-800 px-3 pb-3 pt-2">
-          <p className="truncate text-sm font-semibold text-white">
+        <div className="border-b border-zinc-800 px-3 pt-2 pb-3">
+          <p className="truncate font-[family-name:var(--font-heading)] text-xl font-semibold text-white">
             {user.name}
           </p>
           <p className="truncate text-xs text-zinc-400">{user.email}</p>
-          <span className="mt-2 inline-block rounded-full bg-amber-500/10 px-2 py-0.5 text-[11px] font-semibold capitalize text-amber-500">
+          <span className="mt-2 inline-block rounded-full bg-amber-500/10 px-2 py-0.5 text-[11px] font-semibold text-amber-500 capitalize">
             {user.role || "customer"}
           </span>
         </div>

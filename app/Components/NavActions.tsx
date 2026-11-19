@@ -4,7 +4,7 @@ import ProfileDropdown from "./ProfileDropdown"
 
 // Right side of the navbar.
 // Logged out -> Sign In / Sign Up buttons.
-// Logged in  -> greeting + avatar dropdown.
+// Logged in  -> profile pill (avatar + name) that opens a dropdown.
 export default function NavActions({ user }: { user: SessionUser | null }) {
   if (!user) {
     return (
@@ -26,11 +26,8 @@ export default function NavActions({ user }: { user: SessionUser | null }) {
   }
 
   return (
-    <div className="hidden items-center gap-3 sm:flex">
-      <span className="hidden text-sm text-zinc-300 lg:inline">
-        Hi, <span className="font-semibold text-amber-500">{user.name}</span>
-      </span>
-      <ProfileDropdown user={user} />
+    <div className="hidden sm:block">
+      <ProfileDropdown user={user} showName />
     </div>
   )
 }

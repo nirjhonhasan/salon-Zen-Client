@@ -33,7 +33,7 @@ export default function MobileMenu({ user }: { user: SessionUser | null }) {
       </button>
 
       {isOpen && (
-        <div className="absolute inset-x-0 top-full border-b border-zinc-800 bg-zinc-950 px-4 pb-6 pt-2 shadow-2xl">
+        <div className="absolute inset-x-0 top-full border-b border-zinc-800 bg-zinc-950 px-4 pt-2 pb-6 shadow-2xl">
           <nav className="flex flex-col">
             {links.map((link) => (
               <Link

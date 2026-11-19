@@ -9,7 +9,7 @@ export default async function FeaturedServices() {
   let failed = false
 
   try {
-    services = await getActiveServices(6)
+    services = await getActiveServices({ limit: 6 })
   } catch {
     failed = true
   }

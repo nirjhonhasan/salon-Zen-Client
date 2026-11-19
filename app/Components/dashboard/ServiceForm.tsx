@@ -5,18 +5,9 @@ import { useRouter } from "next/navigation"
 import { ImagePlus, Loader2, Plus, Save } from "lucide-react"
 import { toast } from "sonner"
 import { callServer } from "@/lib/api"
+import { categories } from "@/lib/categories"
 import { uploadImageToImgBB } from "@/lib/imgbb"
 import type { Service } from "@/lib/services"
-
-const categories = [
-  "Haircut & Styling",
-  "Hair Coloring",
-  "Hair Treatment",
-  "Facial & Skincare",
-  "Makeup",
-  "Manicure & Pedicure",
-  "Spa & Massage",
-]
 
 // Same look for every input, so the form stays easy to read.
 const inputClass =

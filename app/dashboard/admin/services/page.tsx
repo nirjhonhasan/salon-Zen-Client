@@ -8,6 +8,7 @@ import { getAllServices } from "@/lib/services"
 export const dynamic = "force-dynamic"
 
 export default async function ManageServicesPage() {
+  
   // Only a logged-in admin can open this page.
   await requireRole("admin")
 

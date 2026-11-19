@@ -1,21 +1,25 @@
 import { betterAuth } from "better-auth";
-import { MongoClient } from "mongodb";
 import { mongodbAdapter } from "@better-auth/mongo-adapter";
-
-const client = new MongoClient(process.env.BETTER_DB_URI as string);
-const db = client.db("salon-zen");
+import { client, db } from "@/lib/mongo";
+import { admin } from "better-auth/plugins";
 
 export const auth = betterAuth({
     baseURL: process.env.BETTER_AUTH_URL,
 
+    plugins: [
+        admin({
+            defaultRole: "customer",
+        })
+        
+    ],
+
     database: mongodbAdapter(db, {
         client,
     }),
-    
+
     emailAndPassword: {
         enabled: true,
     },
-
 
     user: {
         additionalFields: {
@@ -24,6 +28,7 @@ export const auth = betterAuth({
                 input: false,
                 defaultValue: "customer",
             },
+
             isBlocked: {
                 type: "boolean",
                 defaultValue: false,

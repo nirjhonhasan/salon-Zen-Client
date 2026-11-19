@@ -3,8 +3,8 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
-import Image from "next/image";
 import { authClient } from "@/lib/auth-client";
+import { uploadImageToImgBB } from "@/lib/imgbb";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -59,26 +59,20 @@ const SignupPage = () => {
     }
 
     try {
-      let uploadedImageUrl = "";
+      let uploadedImageUrl = ""
 
       // ১. যদি ইমেজ দেওয়া থাকে, তবে সেটি ImgBB-তে আপলোড করা
       if (imageFile) {
-        const imgBbFormData = new FormData();
-        imgBbFormData.append("image", imageFile);
-
-        const apiKey = process.env.NEXT_PUBLIC_IMGBB_API_KEY;
-        const res = await fetch(`https://api.imgbb.com/1/upload?key=${apiKey}`, {
-          method: "POST",
-          body: imgBbFormData,
-        });
-        const imgData = await res.json();
-
-        if (imgData.success) {
-          uploadedImageUrl = imgData.data.url;
-        } else {
-          setError("Failed to upload profile image to ImgBB");
-          setLoading(false);
-          return;
+        try {
+          uploadedImageUrl = await uploadImageToImgBB(imageFile)
+        } catch (uploadError) {
+          setError(
+            uploadError instanceof Error
+              ? uploadError.message
+              : "Failed to upload profile image"
+          )
+          setLoading(false)
+          return
         }
       }
 
@@ -96,9 +90,9 @@ const SignupPage = () => {
         return;
       }
 
-      router.push("/");
+      router.push("/dashboard");
       router.refresh();
-    } catch (err) {
+    } catch {
       setError("An unexpected error occurred");
       setLoading(false);
     }
@@ -175,11 +169,11 @@ const SignupPage = () => {
               <div className="flex items-center gap-4">
                 <div className="relative w-20 h-20 rounded-lg border-2 border-dashed border-zinc-700 bg-zinc-800/50 flex items-center justify-center overflow-hidden shrink-0">
                   {imagePreview ? (
-                    <Image
+                    // eslint-disable-next-line @next/next/no-img-element
+                    <img
                       src={imagePreview}
                       alt="Preview"
-                      fill
-                      className="object-cover"
+                      className="h-full w-full object-cover"
                     />
                   ) : (
                     <Upload className="w-6 h-6 text-zinc-500" />

@@ -1,117 +1,76 @@
-"use client";
+"use client"
 
-import { useState } from "react";
-import { useRouter } from "next/navigation";
-import Link from "next/link";
-import { authClient } from "@/lib/auth-client";
-import { 
-  Avatar, 
-  AvatarFallback, 
-  AvatarImage 
-} from "@/components/ui/avatar";
-import { 
-  Popover, 
-  PopoverContent, 
-  PopoverTrigger 
-} from "@/components/ui/popover";
-import { 
-  LayoutDashboard, 
-  User, 
-  LogOut 
-} from "lucide-react";
+import Link from "next/link"
+import { LayoutDashboard, User } from "lucide-react"
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "@/components/ui/popover"
+import type { SessionUser } from "@/app/Types"
+import SignOutButton from "./SignOutButton"
 
-interface ProfileDropdownProps {
-  user?: {
-    name?: string;
-    email?: string;
-    image?: string | null;
-  } | null;
+function getInitials(name: string) {
+  return name
+    .split(" ")
+    .map((part) => part[0])
+    .join("")
+    .slice(0, 2)
+    .toUpperCase()
 }
 
-export default function ProfileDropdown({ user }: ProfileDropdownProps) {
-  const router = useRouter();
-  const [isOpen, setIsOpen] = useState(false);
-
-  // সাইন আউট হ্যান্ডলার
-  const handleSignOut = async () => {
-    await authClient.signOut({
-      fetchOptions: {
-        onSuccess: () => {
-          router.push("/sign-in");
-          router.refresh();
-        },
-      },
-    });
-  };
-
-  // ইউজারের নামের প্রথম অক্ষর দিয়ে Fallback তৈরি করা (যদি ছবি না থাকে)
-  const getInitials = (name?: string) => {
-    if (!name) return "U";
-    return name
-      .split(" ")
-      .map((n) => n[0])
-      .join("")
-      .toUpperCase()
-      .substring(0, 2);
-  };
-
+// The round avatar in the navbar. Clicking it opens a small menu.
+export default function ProfileDropdown({ user }: { user: SessionUser }) {
   return (
-    <Popover open={isOpen} onOpenChange={setIsOpen}>
-      <PopoverTrigger>
-        <div className="relative rounded-full focus:outline-none focus:ring-2 focus:ring-amber-500 transition cursor-pointer inline-block">
-          <Avatar className="w-10 h-10 border border-zinc-700 hover:border-amber-500 transition">
-            <AvatarImage src={user?.image || ""} alt={user?.name || "User"} className="object-cover" />
-            <AvatarFallback className="bg-zinc-800 text-amber-500 font-semibold">
-              {getInitials(user?.name)}
-            </AvatarFallback>
-          </Avatar>
-        </div>
+    <Popover>
+      <PopoverTrigger className="rounded-full ring-2 ring-transparent transition hover:ring-amber-500/60 focus-visible:outline-none focus-visible:ring-amber-500">
+        <Avatar size="lg">
+          <AvatarImage src={user.image || undefined} alt={user.name} />
+          <AvatarFallback className="bg-zinc-800 font-semibold text-amber-500">
+            {getInitials(user.name)}
+          </AvatarFallback>
+        </Avatar>
       </PopoverTrigger>
 
-      <PopoverContent 
-        className="w-56 bg-zinc-900 border-zinc-800 text-zinc-100 p-2 shadow-xl rounded-xl mr-4"
+      <PopoverContent
         align="end"
+        className="w-64 rounded-xl border border-zinc-800 bg-zinc-900 p-2 text-zinc-100 shadow-2xl"
       >
-        {/* ইউজার ইনফো সেকশন */}
-        <div className="px-3 py-2 border-b border-zinc-800 mb-1">
-          <p className="text-sm font-medium text-white truncate">{user?.name || "User Account"}</p>
-          <p className="text-xs text-zinc-400 truncate">{user?.email || "user@example.com"}</p>
+        {/* Who is logged in */}
+        <div className="border-b border-zinc-800 px-3 pb-3 pt-2">
+          <p className="truncate text-sm font-semibold text-white">
+            {user.name}
+          </p>
+          <p className="truncate text-xs text-zinc-400">{user.email}</p>
+          <span className="mt-2 inline-block rounded-full bg-amber-500/10 px-2 py-0.5 text-[11px] font-semibold capitalize text-amber-500">
+            {user.role || "customer"}
+          </span>
         </div>
 
-        {/* মেনু অপশনসমূহ */}
-        <div className="space-y-1">
+        {/* Links */}
+        <div className="mt-1 space-y-1">
           <Link
             href="/dashboard"
-            onClick={() => setIsOpen(false)}
-            className="flex items-center gap-2 px-3 py-2 text-sm rounded-lg text-zinc-300 hover:bg-zinc-800 hover:text-amber-500 transition"
+            className="flex items-center gap-2 rounded-lg px-3 py-2 text-sm text-zinc-300 transition hover:bg-zinc-800 hover:text-amber-500"
           >
-            <LayoutDashboard className="w-4 h-4 text-amber-500" />
-            <span>Dashboard</span>
+            <LayoutDashboard className="h-4 w-4 text-amber-500" />
+            Dashboard
           </Link>
 
           <Link
-            href="/profile"
-            onClick={() => setIsOpen(false)}
-            className="flex items-center gap-2 px-3 py-2 text-sm rounded-lg text-zinc-300 hover:bg-zinc-800 hover:text-amber-500 transition"
+            href="/dashboard/profile"
+            className="flex items-center gap-2 rounded-lg px-3 py-2 text-sm text-zinc-300 transition hover:bg-zinc-800 hover:text-amber-500"
           >
-            <User className="w-4 h-4 text-amber-500" />
-            <span>Profile</span>
+            <User className="h-4 w-4 text-amber-500" />
+            Profile
           </Link>
-
-          <div className="h-[1px] bg-zinc-800 my-1" />
-
-          <button
-            onClick={() => {
-              setIsOpen(false);
-              handleSignOut();
-            }}
-            className="w-full flex items-center gap-2 px-3 py-2 text-sm rounded-lg text-red-400 hover:bg-red-500/10 hover:text-red-300 transition text-left"
-          >
-            <LogOut className="w-4 h-4" />
-            <span>Sign Out</span>
-          </button>
         </div>
+
+        <div className="my-1 h-px bg-zinc-800" />
+
+        <SignOutButton className="flex w-full items-center gap-2 rounded-lg px-3 py-2 text-left text-sm text-red-400 transition hover:bg-red-500/10 hover:text-red-300" />
       </PopoverContent>
     </Popover>
-  );
+  )
 }

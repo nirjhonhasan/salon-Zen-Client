@@ -1,0 +1,186 @@
+"use client"
+
+import { useState } from "react"
+import { useRouter } from "next/navigation"
+import { Upload } from "lucide-react"
+import { authClient } from "@/lib/auth-client"
+import { uploadImageToImgBB } from "@/lib/imgbb"
+import { Button } from "@/components/ui/button"
+import { Input } from "@/components/ui/input"
+import { Label } from "@/components/ui/label"
+import type { SessionUser } from "@/app/Types"
+
+export default function ProfileForm({ user }: { user: SessionUser }) {
+  const router = useRouter()
+
+  const [name, setName] = useState(user.name)
+  const [image, setImage] = useState(user.image || "")
+  const [preview, setPreview] = useState(user.image || "")
+  const [isUploading, setIsUploading] = useState(false)
+  const [isSaving, setIsSaving] = useState(false)
+  const [message, setMessage] = useState("")
+  const [error, setError] = useState("")
+
+  // 1. Pick a file -> upload to ImgBB -> keep the public URL
+  async function handleImageChange(event: React.ChangeEvent<HTMLInputElement>) {
+    const file = event.target.files?.[0]
+    if (!file) return
+
+    setError("")
+    setMessage("")
+    setIsUploading(true)
+
+    try {
+      const url = await uploadImageToImgBB(file)
+      setImage(url)
+      setPreview(url)
+    } catch (uploadError) {
+      setError(
+        uploadError instanceof Error ? uploadError.message : "Upload failed"
+      )
+    } finally {
+      setIsUploading(false)
+    }
+  }
+
+  // 2. Save the name + image with BetterAuth
+  async function handleSubmit(event: React.FormEvent<HTMLFormElement>) {
+    event.preventDefault()
+    setError("")
+    setMessage("")
+
+    if (name.trim().length < 2) {
+      setError("Name must be at least 2 characters")
+      return
+    }
+
+    setIsSaving(true)
+
+    const { error: updateError } = await authClient.updateUser({
+      name: name.trim(),
+      image: image || undefined,
+    })
+
+    if (updateError) {
+      setError(updateError.message || "Could not save your profile")
+      setIsSaving(false)
+      return
+    }
+
+    setMessage("Profile updated")
+    setIsSaving(false)
+    router.refresh()
+  }
+
+  return (
+    <form
+      onSubmit={handleSubmit}
+      className="space-y-6 rounded-2xl border border-zinc-800 bg-zinc-900 p-6"
+    >
+      {error && (
+        <p className="rounded-lg border border-red-500/40 bg-red-500/10 p-3 text-sm text-red-400">
+          {error}
+        </p>
+      )}
+
+      {message && (
+        <p className="rounded-lg border border-emerald-500/40 bg-emerald-500/10 p-3 text-sm text-emerald-400">
+          {message}
+        </p>
+      )}
+
+      {/* Avatar + upload */}
+      <div className="flex items-center gap-4">
+        <div className="relative h-20 w-20 overflow-hidden rounded-full border border-zinc-700 bg-zinc-800">
+          {preview ? (
+            // eslint-disable-next-line @next/next/no-img-element
+            <img
+              src={preview}
+              alt="Profile picture"
+              className="h-full w-full object-cover"
+            />
+          ) : (
+            <span className="flex h-full w-full items-center justify-center text-xl font-semibold text-amber-500">
+              {name.slice(0, 1).toUpperCase()}
+            </span>
+          )}
+        </div>
+
+        <div>
+          <Label
+            htmlFor="image"
+            className="mb-2 inline-flex cursor-pointer items-center gap-2 rounded-full border border-zinc-700 px-4 py-2 text-sm text-zinc-200 transition hover:border-amber-500 hover:text-amber-500"
+          >
+            <Upload className="h-4 w-4" />
+            {isUploading ? "Uploading..." : "Change picture"}
+          </Label>
+
+          <Input
+            id="image"
+            type="file"
+            accept="image/*"
+            onChange={handleImageChange}
+            disabled={isUploading}
+            className="hidden"
+          />
+
+          <p className="mt-2 text-xs text-zinc-500">PNG, JPG or WEBP</p>
+        </div>
+      </div>
+
+      {/* Name */}
+      <div className="space-y-2">
+        <Label htmlFor="name" className="text-zinc-300">
+          Full name
+        </Label>
+        <Input
+          id="name"
+          value={name}
+          onChange={(event) => setName(event.target.value)}
+          className="border-zinc-700 bg-zinc-800 text-zinc-100 focus-visible:ring-amber-500"
+        />
+      </div>
+
+      {/* Email (not editable here) */}
+      <div className="space-y-2">
+        <Label htmlFor="email" className="text-zinc-300">
+          Email
+        </Label>
+        <Input
+          id="email"
+          value={user.email}
+          disabled
+          className="border-zinc-800 bg-zinc-950 text-zinc-500"
+        />
+        <p className="text-xs text-zinc-500">
+          Your email is used to sign in, so it cannot be changed here.
+        </p>
+      </div>
+
+      {/* Role + status */}
+      <div className="flex flex-wrap gap-2">
+        <span className="rounded-full bg-amber-500/10 px-3 py-1 text-xs font-semibold capitalize text-amber-500">
+          {user.role || "customer"}
+        </span>
+
+        <span
+          className={`rounded-full px-3 py-1 text-xs font-semibold ${
+            user.isBlocked
+              ? "bg-red-500/10 text-red-400"
+              : "bg-emerald-500/10 text-emerald-400"
+          }`}
+        >
+          {user.isBlocked ? "Blocked" : "Active"}
+        </span>
+      </div>
+
+      <Button
+        type="submit"
+        disabled={isSaving || isUploading}
+        className="bg-amber-500 font-semibold text-zinc-950 hover:bg-amber-600"
+      >
+        {isSaving ? "Saving..." : "Save changes"}
+      </Button>
+    </form>
+  )
+}

@@ -16,11 +16,7 @@ const inputClass =
 // This one form is used twice:
 // - Add page: no "service" is passed, so the form starts empty.
 // - Edit page: the "service" is passed, so the form starts filled in.
-export default function ServiceForm({
-  service,
-}: {
-  service?: Service & { status: string }
-}) {
+export default function ServiceForm({ service, }: { service?: Service & { status: string }}) {
   const router = useRouter()
   const isEditing = Boolean(service)
 

@@ -1,5 +1,6 @@
 import Link from "next/link"
 import { ArrowLeft, Clock, Scissors } from "lucide-react"
+import BookingForm from "@/app/Components/Services/BookingForm"
 import { requireUser } from "@/lib/session"
 import { getServiceById, type Service } from "@/lib/services"
 
@@ -77,7 +78,7 @@ export default async function ServiceDetailsPage({
 
         {/* Details */}
         <div className="space-y-4">
-          <span className="inline-block rounded-full bg-amber-500/10 px-3 py-1 text-xs font-semibold uppercase tracking-wide text-amber-500">
+          <span className="inline-block rounded-full bg-amber-500/10 px-3 py-1 text-xs font-semibold tracking-wide text-amber-500 uppercase">
             {service.category}
           </span>
 
@@ -114,13 +115,23 @@ export default async function ServiceDetailsPage({
             )}
 
             {isActive && !isAdmin && (
-              <p className="text-zinc-300">
-                The appointment booking form will appear here.
-              </p>
+              <a
+                href="#booking"
+                className="block rounded-full bg-amber-500 px-5 py-2.5 text-center font-semibold text-zinc-950 transition hover:bg-amber-600"
+              >
+                Book this service
+              </a>
             )}
           </div>
         </div>
       </div>
+
+      {/* Full-width booking form below the details */}
+      {isActive && !isAdmin && (
+        <div className="mt-10">
+          <BookingForm serviceId={service.id} price={service.price} />
+        </div>
+      )}
     </div>
   )
 }

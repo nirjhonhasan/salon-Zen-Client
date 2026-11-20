@@ -4,11 +4,8 @@ import { getServiceById } from "@/lib/services"
 import { requireRole } from "@/lib/session"
 
 // The id in the URL (/dashboard/admin/services/123/edit) comes from params.
-export default async function EditServicePage({
-  params,
-}: {
-  params: Promise<{ id: string }>
-}) {
+export default async function EditServicePage({ params }: { params: Promise<{ id: string }> }) {
+  
   // Only a logged-in admin can open this page.
   await requireRole("admin")
 

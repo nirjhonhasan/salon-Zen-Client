@@ -2,11 +2,7 @@ import type { LucideIcon } from "lucide-react"
 
 // One statistics card: an icon, a number and a label.
 // Reused for every number on the dashboards.
-export default function StatCard({
-  title,
-  value,
-  icon: Icon,
-}: {
+export default function StatCard({ title, value, icon: Icon,}: {
   title: string
   value: number
   icon: LucideIcon

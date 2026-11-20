@@ -4,7 +4,7 @@ const API_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:5000"
 
 export async function callServer(
   path: string,
-  method: "POST" | "PUT" | "PATCH" | "DELETE",
+  method: "GET" | "POST" | "PUT" | "PATCH" | "DELETE",
   body?: object
 ) {
   // 1. Ask our own Next.js route for a token (works only when logged in).

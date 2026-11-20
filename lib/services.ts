@@ -88,9 +88,8 @@ export async function getActiveServices(
 // Get one service from the Express server by its id.
 // Returns null when the id is invalid or the service does not exist.
 // Throws when the server cannot be reached.
-export async function getServiceById(
-  id: string
-): Promise<(Service & { status: string }) | null> {
+export async function getServiceById( id: string ): Promise<(Service & { status: string }) | null> {
+  
   const apiUrl = process.env.NEXT_PUBLIC_API_URL || "http://localhost:5000"
 
   const response = await fetch(`${apiUrl}/services/${id}`, {

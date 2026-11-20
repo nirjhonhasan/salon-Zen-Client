@@ -1,5 +1,7 @@
 // Small helper for calling the Express server from client components.
 // It gets a login token first, then sends it in the Authorization header.
+import GetTokenForClient from "./GetTokenForClient"
+
 const API_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:5000"
 
 export async function callServer(
@@ -7,14 +9,12 @@ export async function callServer(
   method: "GET" | "POST" | "PUT" | "PATCH" | "DELETE",
   body?: object
 ) {
-  // 1. Ask our own Next.js route for a token (works only when logged in).
-  const tokenResponse = await fetch("/api/token")
+  // 1. Get a BetterAuth JWT for the logged-in user (Express checks it with JWKS).
+  const token = await GetTokenForClient()
 
-  if (!tokenResponse.ok) {
+  if (!token) {
     throw new Error("Please sign in again.")
   }
-
-  const { token } = await tokenResponse.json()
 
   // 2. Call the Express server with the token.
   const response = await fetch(`${API_URL}${path}`, {

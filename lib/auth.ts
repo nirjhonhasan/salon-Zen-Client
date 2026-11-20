@@ -1,7 +1,7 @@
 import { betterAuth } from "better-auth";
 import { mongodbAdapter } from "@better-auth/mongo-adapter";
 import { client, db } from "@/lib/mongo";
-import { admin } from "better-auth/plugins";
+import { admin, jwt } from "better-auth/plugins";
 
 export const auth = betterAuth({
     baseURL: process.env.BETTER_AUTH_URL,
@@ -9,9 +9,17 @@ export const auth = betterAuth({
     plugins: [
         admin({
             defaultRole: "customer",
-        })
-        
+        }),
+        jwt(),
+
     ],
+
+    session: {
+        cookieCache: {
+            enabled: true,
+            maxAge: 7 * 24 * 60 * 60,
+        },
+    },
 
     database: mongodbAdapter(db, {
         client,

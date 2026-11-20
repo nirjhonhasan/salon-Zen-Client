@@ -1,3 +1,5 @@
+import { getTokenForServer } from "./GetTokenForSer"
+
 const API_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:5000"
 
 // One service as the UI needs it.
@@ -105,8 +107,12 @@ export async function getActiveServices(
 export async function getServiceById(
   id: string
 ): Promise<ServiceWithStatus | null> {
+  // This route is protected on the server, so send the login token.
+  const token = await getTokenForServer()
+
   const response = await fetch(`${API_URL}/services/${id}`, {
     cache: "no-store",
+    headers: { Authorization: `Bearer ${token}` },
   })
 
 

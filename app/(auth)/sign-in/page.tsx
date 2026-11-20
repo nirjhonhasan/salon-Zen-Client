@@ -1,36 +1,30 @@
-"use client";
+"use client"
 
-import { useState } from "react";
-import { useRouter } from "next/navigation";
-import Link from "next/link";
-import { authClient } from "@/lib/auth-client";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardFooter,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
+import { useState } from "react"
+import { useRouter } from "next/navigation"
+import Link from "next/link"
+import { toast } from "sonner"
+import { Loader2, Lock, Mail } from "lucide-react"
+import { authClient } from "@/lib/auth-client"
+import AuthShell from "@/app/Components/Auth/AuthShell"
+import AuthField from "@/app/Components/Auth/AuthField"
+import GoogleButton from "@/app/Components/Auth/GoogleButton"
 
 const SigninPage = () => {
-  const router = useRouter();
-  const [error, setError] = useState("");
-  const [loading, setLoading] = useState(false);
+  const router = useRouter()
+  const [error, setError] = useState("")
+  const [loading, setLoading] = useState(false)
 
   const handleSignIn = async (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
-    setError("");
-    setLoading(true);
+    e.preventDefault()
+    setError("")
+    setLoading(true)
 
-    const formData = new FormData(e.currentTarget);
-    const data = Object.fromEntries(formData.entries());
+    const formData = new FormData(e.currentTarget)
+    const data = Object.fromEntries(formData.entries())
 
-    const email = data.email as string;
-    const password = data.password as string;
+    const email = data.email as string
+    const password = data.password as string
 
     try {
       const { error: authError } = await authClient.signIn.email(
@@ -39,99 +33,92 @@ const SigninPage = () => {
           password,
         },
         {
-          onRequest: () => {
-            setLoading(true);
-          },
           onSuccess: () => {
-            router.push("/dashboard");
-            router.refresh();
+            toast.success("Welcome back!")
+            router.push("/dashboard")
+            router.refresh()
           },
           onError: (ctx) => {
-            setError(ctx.error.message || "Invalid email or password");
-            setLoading(false);
+            const message = ctx.error.message || "Invalid email or password"
+            setError(message)
+            toast.error(message)
+            setLoading(false)
           },
         }
-      );
+      )
 
       if (authError) {
-        setError(authError.message || "Sign in failed");
-        setLoading(false);
+        setLoading(false)
       }
     } catch {
-      setError("An unexpected error occurred");
-      setLoading(false);
+      setError("An unexpected error occurred")
+      toast.error("An unexpected error occurred")
+      setLoading(false)
     }
-  };
+  }
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-zinc-950 px-4">
-      <Card className="w-full max-w-md bg-zinc-900 border-zinc-800 text-zinc-100">
-        <CardHeader className="text-center space-y-1">
-          <CardTitle className="text-3xl font-bold text-amber-500">
-            SalonBook
-          </CardTitle>
-          <CardDescription className="text-zinc-400">
-            Sign in to your account to continue
-          </CardDescription>
-        </CardHeader>
+    <AuthShell
+      title="Welcome back"
+      subtitle="Sign in to manage your appointments"
+      footer={
+        <>
+          Don&apos;t have an account?{" "}
+          <Link
+            href="/sign-up"
+            className="font-medium text-amber-500 hover:underline"
+          >
+            Sign Up
+          </Link>
+        </>
+      }
+    >
+      <GoogleButton label="Continue with Google" />
 
-        <CardContent>
-          {error && (
-            <div className="bg-red-500/10 border border-red-500 text-red-400 text-sm p-3 rounded-md mb-4 text-center">
-              {error}
-            </div>
-          )}
+      <div className="my-6 flex items-center gap-3 text-xs text-zinc-500">
+        <span className="h-px flex-1 bg-zinc-800" />
+        or sign in with email
+        <span className="h-px flex-1 bg-zinc-800" />
+      </div>
 
-          <form onSubmit={handleSignIn} className="space-y-4">
-            <div className="space-y-2">
-              <Label htmlFor="email" className="text-zinc-300">
-                Email
-              </Label>
-              <Input
-                id="email"
-                name="email"
-                type="email"
-                required
-                placeholder="name@example.com"
-                className="bg-zinc-800 border-zinc-700 text-zinc-100 focus-visible:ring-amber-500"
-              />
-            </div>
+      {error && (
+        <div className="mb-4 rounded-xl border border-red-500/40 bg-red-500/10 p-3 text-center text-sm text-red-400">
+          {error}
+        </div>
+      )}
 
-            <div className="space-y-2">
-              <Label htmlFor="password" className="text-zinc-300">
-                Password
-              </Label>
-              <Input
-                id="password"
-                name="password"
-                type="password"
-                required
-                placeholder="••••••••"
-                className="bg-zinc-800 border-zinc-700 text-zinc-100 focus-visible:ring-amber-500"
-              />
-            </div>
+      <form onSubmit={handleSignIn} className="space-y-4">
+        <AuthField
+          id="email"
+          name="email"
+          type="email"
+          label="Email"
+          icon={Mail}
+          required
+          placeholder="name@example.com"
+        />
 
-            <Button
-              type="submit"
-              disabled={loading}
-              className="w-full bg-amber-500 hover:bg-amber-600 text-zinc-950 font-semibold mt-2"
-            >
-              {loading ? "Signing in..." : "Sign In"}
-            </Button>
-          </form>
-        </CardContent>
+        <AuthField
+          id="password"
+          name="password"
+          type="password"
+          label="Password"
+          icon={Lock}
+          required
+          placeholder="••••••••"
+        />
 
-        <CardFooter className="justify-center">
-          <p className="text-sm text-zinc-400">
-            Dont have an account?{" "}
-            <Link href="/sign-up" className="text-amber-500 hover:underline">
-              Sign Up
-            </Link>
-          </p>
-        </CardFooter>
-      </Card>
-    </div>
-  );
-};
+        <button
+          type="submit"
+          disabled={loading}
+          className="mt-2 flex h-11 w-full items-center justify-center gap-2 rounded-full bg-amber-500 font-semibold text-zinc-950 transition hover:bg-amber-600 disabled:cursor-not-allowed disabled:opacity-60"
+        >
+          {loading && <Loader2 className="h-4 w-4 animate-spin" />}
+          {loading ? "Signing in..." : "Sign In"}
+        </button>
+      </form>
+    </AuthShell>
+  )
+}
 
-export default SigninPage;
+export default SigninPage

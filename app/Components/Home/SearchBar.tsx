@@ -1,13 +1,29 @@
 "use client"
 
 import { useState } from "react"
+import { useRouter } from "next/navigation"
 import { Search, X } from "lucide-react"
 
 // A small search icon in the navbar.
 // Click it to open a search box. Submitting the form opens
 // /services?search=... and the services page does the searching.
 export default function SearchBar() {
+  const router = useRouter()
   const [isOpen, setIsOpen] = useState(false)
+
+  // Go to the services page ourselves. Closing the box inside a normal form
+  // submit removes the form before the browser can send it, so nothing happens.
+  function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
+    e.preventDefault()
+    const text = String(
+      new FormData(e.currentTarget).get("search") ?? ""
+    ).trim()
+
+    if (!text) return
+
+    router.push(`/services?search=${encodeURIComponent(text)}`)
+    setIsOpen(false)
+  }
 
   return (
     <div>
@@ -24,7 +40,7 @@ export default function SearchBar() {
         <div className="absolute inset-x-0 top-full border-b border-amber-500/20 bg-zinc-950/95 px-4 py-4 shadow-2xl backdrop-blur-md">
           <form
             action="/services"
-            onSubmit={() => setIsOpen(false)}
+            onSubmit={handleSubmit}
             className="mx-auto flex max-w-2xl items-center gap-2 rounded-full border border-zinc-700 bg-zinc-900 p-1.5 pl-5 focus-within:border-amber-500"
           >
             <Search className="h-4 w-4 shrink-0 text-amber-500" />

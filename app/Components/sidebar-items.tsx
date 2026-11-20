@@ -3,6 +3,7 @@ import {
   PlusCircle,
   Scissors,
   User,
+  Users,
   Wrench,
 } from "lucide-react"
 
@@ -20,6 +21,11 @@ export function getSidebarItems(role: string) {
         title: "Add Service",
         href: "/dashboard/admin/services/new",
         icon: PlusCircle,
+      },
+      {
+        title: "Manage Users",
+        href: "/dashboard/admin/users",
+        icon: Users,
       },
       { title: "Browse Services", href: "/services", icon: Scissors },
       { title: "My Profile", href: "/dashboard/profile", icon: User },

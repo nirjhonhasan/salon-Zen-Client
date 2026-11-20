@@ -2,7 +2,7 @@ import Link from "next/link"
 import { ArrowLeft, Clock, Scissors } from "lucide-react"
 import BookingForm from "@/app/Components/Services/BookingForm"
 import { requireUser } from "@/lib/session"
-import { getServiceById, type Service } from "@/lib/services"
+import { getServiceById, type ServiceWithStatus } from "@/lib/services"
 
 // This page is private: logged-out visitors go to /sign-in.
 // The id in the URL (/services/123) comes from params.
@@ -14,7 +14,7 @@ export default async function ServiceDetailsPage({
   const user = await requireUser()
   const { id } = await params
 
-  let service: (Service & { status: string }) | null = null
+  let service: ServiceWithStatus | null = null
   let loadError = false
 
   try {

@@ -3,8 +3,7 @@ import { redirect } from "next/navigation"
 import { auth } from "@/lib/auth"
 import type { SessionUser } from "@/app/Types"
 
-// Read the logged-in user on the server (in a page or a layout).
-// Returns null when nobody is logged in.
+
 export async function getCurrentUser(): Promise<SessionUser | null> {
   const session = await auth.api.getSession({
     headers: await headers(),
@@ -17,8 +16,9 @@ export async function getCurrentUser(): Promise<SessionUser | null> {
   return session.user as SessionUser
 }
 
-// Use this in any page that needs a logged-in user.
-// It stops the page and sends the visitor somewhere useful instead.
+
+
+
 export async function requireUser(): Promise<SessionUser> {
   const user = await getCurrentUser()
 

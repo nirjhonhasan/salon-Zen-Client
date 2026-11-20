@@ -7,7 +7,7 @@ import { toast } from "sonner"
 import { callServer } from "@/lib/api"
 import { categories } from "@/lib/categories"
 import { uploadImageToImgBB } from "@/lib/imgbb"
-import type { Service } from "@/lib/services"
+import type { ServiceWithStatus } from "@/lib/services"
 
 // Same look for every input, so the form stays easy to read.
 const inputClass =
@@ -16,7 +16,11 @@ const inputClass =
 // This one form is used twice:
 // - Add page: no "service" is passed, so the form starts empty.
 // - Edit page: the "service" is passed, so the form starts filled in.
-export default function ServiceForm({ service, }: { service?: Service & { status: string }}) {
+export default function ServiceForm({
+  service,
+}: {
+  service?: ServiceWithStatus
+}) {
   const router = useRouter()
   const isEditing = Boolean(service)
 

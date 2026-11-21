@@ -1,6 +1,5 @@
 import Link from "next/link"
 import { ArrowLeft, Clock, Scissors } from "lucide-react"
-import BookingForm from "@/app/Components/Services/BookingForm"
 import { requireUser } from "@/lib/session"
 import { getServiceById, type ServiceWithStatus } from "@/lib/services"
 
@@ -11,7 +10,7 @@ export default async function ServiceDetailsPage({
 }: {
   params: Promise<{ id: string }>
 }) {
-  const user = await requireUser()
+  await requireUser()
   const { id } = await params
 
   let service: ServiceWithStatus | null = null
@@ -47,7 +46,6 @@ export default async function ServiceDetailsPage({
   }
 
   const isActive = service.status === "active"
-  const isAdmin = user.role === "admin"
 
   return (
     <div className="mx-auto max-w-5xl px-4 py-12 sm:px-6">
@@ -100,38 +98,21 @@ export default async function ServiceDetailsPage({
             </span>
           </div>
 
-          {/* Booking area */}
-          <div className="rounded-xl border border-zinc-800 bg-zinc-900 p-4 text-sm">
-            {!isActive && (
-              <p className="text-red-400">
-                This service is not available for booking right now.
-              </p>
-            )}
-
-            {isActive && isAdmin && (
-              <p className="text-zinc-400">
-                Admin accounts cannot book appointments.
-              </p>
-            )}
-
-            {isActive && !isAdmin && (
-              <a
-                href="#booking"
-                className="block rounded-full bg-amber-500 px-5 py-2.5 text-center font-semibold text-zinc-950 transition hover:bg-amber-600"
-              >
-                Book this service
-              </a>
-            )}
-          </div>
+          {/* Booking button */}
+          {isActive ? (
+            <Link
+              href={`/services/${service.id}/book`}
+              className="block rounded-full bg-amber-500 px-5 py-3 text-center font-semibold text-zinc-950 transition hover:bg-amber-600"
+            >
+              Book Now
+            </Link>
+          ) : (
+            <p className="rounded-xl border border-zinc-800 bg-zinc-900 p-4 text-sm text-red-400">
+              This service is not available for booking right now.
+            </p>
+          )}
         </div>
       </div>
-
-      {/* Full-width booking form below the details */}
-      {isActive && !isAdmin && (
-        <div className="mt-10">
-          <BookingForm serviceId={service.id} price={service.price} />
-        </div>
-      )}
     </div>
   )
 }

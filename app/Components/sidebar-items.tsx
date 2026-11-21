@@ -13,15 +13,16 @@ export function getSidebarItems(role: string) {
     return [
       { title: "Dashboard", href: "/dashboard/admin", icon: LayoutDashboard },
       {
-        title: "Manage Services",
-        href: "/dashboard/admin/services",
-        icon: Wrench,
-      },
-      {
         title: "Add Service",
         href: "/dashboard/admin/services/new",
         icon: PlusCircle,
       },
+      {
+        title: "Manage Services",
+        href: "/dashboard/admin/services",
+        icon: Wrench,
+      },
+      
       {
         title: "Manage Users",
         href: "/dashboard/admin/users",

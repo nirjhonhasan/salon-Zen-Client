@@ -38,7 +38,6 @@ export default function BookingForm({
   const [submitting, setSubmitting] = useState(false)
   const [error, setError] = useState("")
 
-  // Ask the server which slots are taken whenever the date changes.
   useEffect(() => {
     if (!date) return
 
@@ -53,7 +52,7 @@ export default function BookingForm({
         )
         if (!cancelled) {
           setBookedSlots(data.slots)
-          // Clear the chosen slot if it was just taken.
+
           setTimeSlot((current) =>
             data.slots.includes(current) ? "" : current
           )
@@ -130,9 +129,8 @@ export default function BookingForm({
 
   return (
     <form
-      id="booking"
       onSubmit={handleSubmit}
-      className="scroll-mt-24 rounded-2xl border border-zinc-800 bg-zinc-900 p-5 sm:p-8"
+      className="rounded-2xl border border-zinc-800 bg-zinc-900 p-5 sm:p-8"
     >
       <div className="mb-6 border-b border-zinc-800 pb-4">
         <h2 className="text-2xl font-bold text-white">Book your appointment</h2>
@@ -141,7 +139,7 @@ export default function BookingForm({
         </p>
       </div>
 
-      <div className="grid gap-6 lg:grid-cols-2">
+      <div className="grid gap-6 sm:grid-cols-2">
         {/* Left: date and time */}
         <div className="space-y-5">
           <div className="space-y-2">

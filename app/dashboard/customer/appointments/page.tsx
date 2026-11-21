@@ -136,13 +136,23 @@ export default async function MyAppointmentsPage() {
                       }
                     />
                   </div>
-
-                  {item.status === "confirmed" &&
-                    item.paymentStatus === "unpaid" && (
-                      <PayNowButton appointmentId={item.id} />
-                    )}
                 </div>
               </div>
+
+              {/* Pay strip: only for confirmed + unpaid appointments */}
+              {item.status === "confirmed" &&
+                item.paymentStatus === "unpaid" && (
+                  <div className="mt-4 flex flex-col gap-3 rounded-xl border border-amber-500/20 bg-amber-500/5 p-4 sm:flex-row sm:items-center sm:justify-between">
+                    <p className="text-sm text-zinc-300">
+                      Your appointment is confirmed. Pay{" "}
+                      <span className="font-semibold text-amber-500">
+                        ${item.servicePrice}
+                      </span>{" "}
+                      to complete your booking.
+                    </p>
+                    <PayNowButton appointmentId={item.id} />
+                  </div>
+                )}
 
               {/* Details open and close with the browser's built-in <details> */}
               <details className="group mt-4 border-t border-zinc-800 pt-3">

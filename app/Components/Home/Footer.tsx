@@ -28,7 +28,7 @@ export default function Footer() {
           {/* 1. Logo, short description and social links */}
           <div>
             <Link href="/" className="flex items-center gap-3">
-              <span className="relative block h-10 w-10 overflow-hidden rounded-full bg-zinc-900">
+              <span className="relative block h-10 w-10 overflow-hidden">
                 <Image
                   src="/logo.webp"
                   alt="SalonBook logo"
@@ -38,7 +38,7 @@ export default function Footer() {
                 />
               </span>
               <span className="text-xl font-bold text-white">
-                Salon<span className="text-amber-500">Book</span>
+                Salon<span className="text-amber-500">Zone</span>
               </span>
             </Link>
 

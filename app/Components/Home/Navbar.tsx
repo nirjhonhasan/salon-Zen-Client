@@ -18,7 +18,7 @@ export default async function Navbar() {
       <div className="relative mx-auto flex h-20 max-w-7xl items-center justify-between px-4 sm:px-6 lg:px-8">
         {/* Logo */}
         <Link href="/" className="flex items-center gap-3">
-          <span className="relative block h-11 w-11 overflow-hidden rounded-full bg-zinc-900 ring-2 ring-amber-500/60">
+          <span className="relative block h-11 w-11 overflow-hidden">
             <Image
               src="/logo.webp"
               alt="SalonBook logo"
@@ -29,7 +29,7 @@ export default async function Navbar() {
             />
           </span>
           <span className="font-[family-name:var(--font-heading)] text-3xl font-semibold tracking-wide text-white">
-            Salon<span className="text-amber-500">Book</span>
+            Salon<span className="text-amber-500">Zone</span>
           </span>
         </Link>
 

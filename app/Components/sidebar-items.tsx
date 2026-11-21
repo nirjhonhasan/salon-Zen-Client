@@ -1,6 +1,7 @@
 import {
   CalendarCheck,
   ClipboardList,
+  CreditCard,
   LayoutDashboard,
   PlusCircle,
   Scissors,
@@ -34,6 +35,11 @@ export function getSidebarItems(role: string) {
         title: "Manage Users",
         href: "/dashboard/admin/users",
         icon: Users,
+      },
+      {
+        title: "Transactions",
+        href: "/dashboard/admin/transactions",
+        icon: CreditCard,
       },
       { title: "Browse Services", href: "/services", icon: Scissors },
       { title: "My Profile", href: "/dashboard/profile", icon: User },

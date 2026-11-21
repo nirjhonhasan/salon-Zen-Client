@@ -1,5 +1,6 @@
 import Link from "next/link"
 import { CalendarDays, ChevronDown, Clock, Scissors } from "lucide-react"
+import CancelMyAppointment from "@/app/Components/dashboard/CancelMyAppointment"
 import PayNowButton from "@/app/Components/dashboard/PayNowButton"
 import { requireRole } from "@/lib/session"
 import { getMyAppointments, type MyAppointment } from "@/lib/appointments"
@@ -136,10 +137,17 @@ export default async function MyAppointmentsPage() {
                       }
                     />
                   </div>
+
+                  {/* A customer can cancel only a pending appointment */}
+                  {item.status === "pending" && (
+                    <CancelMyAppointment
+                      id={item.id}
+                      serviceName={item.serviceName}
+                    />
+                  )}
                 </div>
               </div>
 
-              {/* Pay strip: only for confirmed + unpaid appointments */}
               {item.status === "confirmed" &&
                 item.paymentStatus === "unpaid" && (
                   <div className="mt-4 flex flex-col gap-3 rounded-xl border border-amber-500/20 bg-amber-500/5 p-4 sm:flex-row sm:items-center sm:justify-between">
@@ -154,7 +162,6 @@ export default async function MyAppointmentsPage() {
                   </div>
                 )}
 
-              {/* Details open and close with the browser's built-in <details> */}
               <details className="group mt-4 border-t border-zinc-800 pt-3">
                 <summary className="flex cursor-pointer list-none items-center gap-1.5 text-sm font-medium text-zinc-300 transition hover:text-amber-500">
                   View details

@@ -27,7 +27,7 @@ export default function DashboardSideBar({ user }: { user: SessionUser }) {
       {/* Brand */}
       <SidebarHeader className="border-b border-zinc-800/80 px-5 py-5">
         <Link href="/" className="flex items-center gap-2.5">
-          <span className="relative block h-10 w-10 overflow-hidden rounded-full bg-zinc-900">
+          <span className="relative block h-10 w-10 overflow-hidden ">
             <Image
               src="/logo.webp"
               alt="SalonBook logo"
@@ -37,7 +37,7 @@ export default function DashboardSideBar({ user }: { user: SessionUser }) {
             />
           </span>
           <span className="text-xl font-bold tracking-wide text-white">
-            Salon<span className="text-amber-500">Book</span>
+            Salon<span className="text-amber-500">Zone</span>
           </span>
         </Link>
       </SidebarHeader>

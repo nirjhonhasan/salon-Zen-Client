@@ -2,21 +2,19 @@ import Link from "next/link"
 import { CheckCircle2, Home, LayoutDashboard } from "lucide-react"
 import { requireUser } from "@/lib/session"
 
-// Stripe sends the customer here after a successful payment:
-// /booking-success?session_id=cs_test_123
-// This page only shows a message. It does NOT mark anything as paid.
-// Only the Stripe webhook on the server is allowed to do that.
-export default async function BookingSuccessPage({
-  searchParams,
-}: {
-  searchParams: Promise<{ session_id?: string }>
-}) {
+
+
+
+export default async function BookingSuccessPage({ searchParams,}: {
+  searchParams: Promise<{ session_id?: string }> }) { 
+
   await requireUser()
   const { session_id } = await searchParams
 
   return (
     <div className="relative flex min-h-[70vh] items-center justify-center overflow-hidden px-4 py-16">
-      {/* Soft golden glow behind the card */}
+      
+      
       <div className="pointer-events-none absolute top-1/2 left-1/2 h-96 w-96 -translate-x-1/2 -translate-y-1/2 rounded-full bg-amber-500/10 blur-3xl" />
 
       <div className="relative w-full max-w-lg rounded-2xl border border-zinc-800 bg-zinc-900 p-8 text-center shadow-2xl">
@@ -32,7 +30,6 @@ export default async function BookingSuccessPage({
           as paid in a few moments. We look forward to seeing you at the salon.
         </p>
 
-        {/* Payment reference from Stripe (only shown when it is in the URL) */}
         {session_id && (
           <div className="mt-5 rounded-xl border border-zinc-800 bg-zinc-950 p-3">
             <p className="text-xs text-zinc-500">Payment reference</p>

@@ -136,7 +136,7 @@ export default async function MyAppointmentsPage() {
                       }
                     />
                   </div>
-                  {/* Pay Now is only for confirmed appointments that are unpaid */}
+
                   {item.status === "confirmed" &&
                     item.paymentStatus === "unpaid" && (
                       <PayNowButton appointmentId={item.id} />

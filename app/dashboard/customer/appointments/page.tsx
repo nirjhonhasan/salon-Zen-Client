@@ -136,18 +136,19 @@ export default async function MyAppointmentsPage() {
                         paymentStyles[item.paymentStatus] ?? "bg-zinc-800"
                       }
                     />
-                  </div>
 
-                  {/* A customer can cancel only a pending appointment */}
-                  {item.status === "pending" && (
-                    <CancelMyAppointment
-                      id={item.id}
-                      serviceName={item.serviceName}
-                    />
-                  )}
+                    {/* A customer can cancel only a pending appointment */}
+                    {item.status === "pending" && (
+                      <CancelMyAppointment
+                        id={item.id}
+                        serviceName={item.serviceName}
+                      />
+                    )}
+                  </div>
                 </div>
               </div>
 
+              {/* Pay strip: only for confirmed + unpaid appointments */}
               {item.status === "confirmed" &&
                 item.paymentStatus === "unpaid" && (
                   <div className="mt-4 flex flex-col gap-3 rounded-xl border border-amber-500/20 bg-amber-500/5 p-4 sm:flex-row sm:items-center sm:justify-between">

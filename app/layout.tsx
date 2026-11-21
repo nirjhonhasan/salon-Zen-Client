@@ -3,6 +3,7 @@ import "./globals.css"
 import { ThemeProvider } from "@/components/theme-provider"
 import { Toaster } from "@/components/ui/sonner"
 import { cn } from "@/lib/utils"
+import { Metadata } from "next"
 
 const headingFont = Cormorant_Garamond({
   subsets: ["latin"],
@@ -14,6 +15,11 @@ const bodyFont = Manrope({
   subsets: ["latin"],
   variable: "--font-sans",
 })
+
+export const metadata: Metadata = {
+  title: "SalonZone — Salon & Appointment Booking",
+  description: "Modern salon services and appointment booking.",
+}
 
 export default function RootLayout({
   children,

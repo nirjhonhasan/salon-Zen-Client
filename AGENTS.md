@@ -323,8 +323,9 @@ Not built yet (assignment requirements):
 - Admin user management (list, details, block/unblock via `isBlocked`)
 - Admin transactions page (read-only)
 - Stripe Checkout, `/payment/success`, `/payment/cancel`, **verified webhook**
-- Profile: phone field (add as `additionalFields`, `input: true` only for
-  phone; role/isBlocked stay `input: false`)
+- ~~Profile: phone field~~ — done: `phone` is an `additionalFields` entry with
+  `input: true` and a zod validator in `lib/auth.ts`; role/isBlocked stay
+  `input: false`
 - Toasts (`sonner`), `loading.tsx`/skeletons, `error.tsx`, confirmation dialogs
 - Role-specific sidebar items (currently only Dashboard / Browse Services /
   My Profile for both roles)

@@ -7,5 +7,6 @@ export type SessionUser = {
   image?: string | null
   role?: string | null
   isBlocked?: boolean | null
+  phone?: string | null
   createdAt?: Date | string | null
 }

@@ -4,6 +4,7 @@ import {
   CalendarDays,
   Crown,
   Mail,
+  Phone,
   Scissors,
   ShieldCheck,
   Sparkles,
@@ -95,6 +96,11 @@ export default function ProfileCard({ user }: { user: SessionUser }) {
         <p className="mt-1 flex items-center justify-center gap-2 text-sm text-zinc-400">
           <Mail className="h-4 w-4 shrink-0 text-amber-500" />
           <span className="truncate">{user.email}</span>
+        </p>
+
+        <p className="mt-1 flex items-center justify-center gap-2 text-sm text-zinc-400">
+          <Phone className="h-4 w-4 shrink-0 text-amber-500" />
+          <span className="truncate">{user.phone || "No phone added"}</span>
         </p>
 
         <span className="mt-4 inline-flex items-center gap-1.5 rounded-full border border-amber-500/40 bg-amber-500/10 px-4 py-1.5 text-xs font-semibold text-amber-500">

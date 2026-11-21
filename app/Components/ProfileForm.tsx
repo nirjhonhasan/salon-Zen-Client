@@ -11,10 +11,14 @@ import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import type { SessionUser } from "@/app/Types"
 
+// 7 to 15 digits, with an optional + at the start and spaces or dashes inside.
+const phoneRegex = /^\+?[0-9][0-9\s-]{5,18}[0-9]$/
+
 export default function ProfileForm({ user }: { user: SessionUser }) {
   const router = useRouter()
 
   const [name, setName] = useState(user.name)
+  const [phone, setPhone] = useState(user.phone || "")
   const [image, setImage] = useState(user.image || "")
   const [preview, setPreview] = useState(user.image || "")
   const [isUploading, setIsUploading] = useState(false)
@@ -49,11 +53,18 @@ export default function ProfileForm({ user }: { user: SessionUser }) {
       return
     }
 
+    // The phone is optional. If it is filled, it must look like a phone number.
+    if (phone.trim() && !phoneRegex.test(phone.trim())) {
+      toast.error("Please enter a valid phone number")
+      return
+    }
+
     setIsSaving(true)
 
     const { error: updateError } = await authClient.updateUser({
       name: name.trim(),
       image: image || undefined,
+      phone: phone.trim(),
     })
 
     if (updateError) {
@@ -124,6 +135,22 @@ export default function ProfileForm({ user }: { user: SessionUser }) {
           id="name"
           value={name}
           onChange={(event) => setName(event.target.value)}
+          className="border-zinc-700 bg-zinc-800 text-zinc-100 focus-visible:ring-amber-500"
+        />
+      </div>
+
+      {/* Phone (optional) */}
+      <div className="space-y-2">
+        <Label htmlFor="phone" className="text-zinc-300">
+          Phone <span className="text-zinc-500">(optional)</span>
+        </Label>
+        <Input
+          id="phone"
+          type="tel"
+          value={phone}
+          onChange={(event) => setPhone(event.target.value)}
+          placeholder="+8801XXXXXXXXX"
+          maxLength={20}
           className="border-zinc-700 bg-zinc-800 text-zinc-100 focus-visible:ring-amber-500"
         />
       </div>

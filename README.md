@@ -45,7 +45,7 @@ in this repository.
 - Overview dashboard with total, pending, confirmed and cancelled counts.
 - "My Appointments" with details, **cancel (pending only)** and **Pay Now
   (confirmed and unpaid only)** through Stripe Checkout.
-- Profile page to update name and picture (upload).
+- Profile page to update name, picture (upload) and an optional phone number.
 
 ### For admins
 

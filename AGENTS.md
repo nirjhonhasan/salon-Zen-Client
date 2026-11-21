@@ -173,7 +173,7 @@ lib/
   mongo.ts                   shared `db` handle (server only)
   services.ts                getActiveServices() read helper (server only)
   service/add-service/page.tsx  MISPLACED page (see Known gaps #8)
-  imgbb.ts                   uploadImageToImgBB helper
+  imgbb.ts                   uploadImageToImgBB helper (calls /api/upload)
   utils.ts                   cn()
 public/                      logo.webp, banner_bg.webp
 ```
@@ -264,9 +264,12 @@ Rules:
   `/dashboard/customer`, `/dashboard/profile`.
 - Password policy currently enforced in the sign-up form: min 6 chars, at least
   one upper and one lower case letter.
-- Profile images upload to ImgBB via `uploadImageToImgBB()` in `lib/imgbb.ts`
-  (browser, `NEXT_PUBLIC_IMGBB_API_KEY`), then are saved through
-  `authClient.updateUser({ name, image })`.
+- Images upload through `uploadImageToImgBB()` in `lib/imgbb.ts`, which posts to
+  our own route `app/api/upload/route.ts`. That route holds the private
+  `IMGBB_API_KEY`, checks type (JPG/PNG/WEBP) and size (5 MB), and returns only
+  the URL. Service pictures (`purpose: "service"`) are admin only; the sign-up
+  picture is allowed for visitors who are not logged in. Profile images are then
+  saved through `authClient.updateUser({ name, image })`.
 
 ## Data model
 
@@ -340,11 +343,10 @@ Not built yet (assignment requirements):
 - Every async action shows loading + error feedback; use `sonner`-style toasts
   once added.
 - Secrets stay in `.env` (git-ignored). Only `NEXT_PUBLIC_*` values may reach
-  the browser — treat `NEXT_PUBLIC_IMGBB_API_KEY` as a temporary compromise and
-  move uploads behind an API route when time allows.
+  the browser. The ImgBB key is server-only (`IMGBB_API_KEY`).
 - Environment variables used: `BETTER_DB_URI`, `BETTER_AUTH_URL`,
   `BETTER_AUTH_SECRET`, `GOOGLE_CLIENT_ID`, `GOOGLE_CLIENT_SECRET`,
-  `NEXT_PUBLIC_IMGBB_API_KEY`, `NEXT_PUBLIC_API_URL`; Stripe adds
+  `IMGBB_API_KEY` (server only), `NEXT_PUBLIC_API_URL`; Stripe adds
   `STRIPE_SECRET_KEY` and `STRIPE_WEBHOOK_SECRET` (server only). The README must
   list names only. Never commit `.env`.
 
@@ -401,10 +403,9 @@ Fix these when touching the related area:
    comments — reformat to Prettier rules and English comments.
 9. `app/dashboard/admin/users/page.tsx` is a placeholder with no guard. Add
    `requireRole("admin")` before building it; every new admin page must call it.
-10. `NEXT_PUBLIC_IMGBB_API_KEY` exposes the ImgBB key to the browser, which
-    conflicts with the "secure ImgBB key" requirement. Move uploads to a
-    server route (`app/api/upload`) using a non-public `IMGBB_API_KEY`, and use
-    it for the service image upload too (file upload only, no URL field).
+10. ~~ImgBB key exposed to the browser~~ — fixed: uploads go through
+    `app/api/upload` with the private `IMGBB_API_KEY`. The old key was public, so
+    regenerate it in ImgBB.
 11. UI branding says SalonZen in places; the spec requires "SalonBook".
 12. Sidebar and `/services` links must only point to routes that exist; add
     admin/customer items (appointments, services, users, transactions) as

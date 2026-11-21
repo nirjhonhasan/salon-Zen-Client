@@ -67,7 +67,7 @@ export default function ServiceForm({
       // 1. Upload a new image if one was chosen, otherwise keep the old one.
       let imageUrl = service?.image ?? ""
       if (imageFile) {
-        imageUrl = await uploadImageToImgBB(imageFile)
+        imageUrl = await uploadImageToImgBB(imageFile, "service")
       }
 
       // 2. Send the data to the Express server.

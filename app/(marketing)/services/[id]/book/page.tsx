@@ -32,11 +32,8 @@ function Message({
 
 // Booking page: /services/123/book
 // Service info comes from the id in the URL, user info from the session.
-export default async function BookingPage({
-  params,
-}: {
-  params: Promise<{ id: string }>
-}) {
+export default async function BookingPage({ params, }: {
+  params: Promise<{ id: string }> }) {
   // 1. Who is logged in? (logged-out visitors are sent to /sign-in)
   const user = await requireUser()
 
@@ -193,3 +190,5 @@ export default async function BookingPage({
     </div>
   )
 }
+
+

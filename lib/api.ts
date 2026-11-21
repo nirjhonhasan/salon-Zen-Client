@@ -30,7 +30,7 @@ export async function callServer(
 
   // 3. If the server says no, turn its message into an error.
   if (!response.ok) {
-    throw new Error(data.message || "Something went wrong.")
+    throw new Error(data.message || data.error || "Something went wrong.")
   }
 
   return data

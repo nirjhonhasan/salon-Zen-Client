@@ -6,8 +6,8 @@ import { usePathname } from "next/navigation"
 // Add a line here when you create a new dashboard page.
 const titles: Record<string, string> = {
   "/dashboard/admin": "Admin Overview",
-  "/dashboard/admin/services/new": "Add Service",
   "/dashboard/admin/services": "Manage Services",
+  "/dashboard/admin/services/new": "Add Service",
   "/dashboard/admin/users": "Manage Users",
   "/dashboard/admin/appointments": "Manage Appointments",
   "/dashboard/admin/transactions": "Transactions",

@@ -1,4 +1,6 @@
 import {
+  CalendarCheck,
+  ClipboardList,
   LayoutDashboard,
   PlusCircle,
   Scissors,
@@ -22,7 +24,12 @@ export function getSidebarItems(role: string) {
         href: "/dashboard/admin/services",
         icon: Wrench,
       },
-      
+
+      {
+        title: "Manage Appointments",
+        href: "/dashboard/admin/appointments",
+        icon: ClipboardList,
+      },
       {
         title: "Manage Users",
         href: "/dashboard/admin/users",
@@ -35,6 +42,11 @@ export function getSidebarItems(role: string) {
 
   return [
     { title: "Dashboard", href: "/dashboard/customer", icon: LayoutDashboard },
+    {
+      title: "My Appointments",
+      href: "/dashboard/customer/appointments",
+      icon: CalendarCheck,
+    },
     { title: "Browse Services", href: "/services", icon: Scissors },
     { title: "My Profile", href: "/dashboard/profile", icon: User },
   ]

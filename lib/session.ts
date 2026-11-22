@@ -1,20 +1,25 @@
+import { cache } from "react"
 import { headers } from "next/headers"
 import { redirect } from "next/navigation"
 import { auth } from "@/lib/auth"
 import type { SessionUser } from "@/app/Types"
 
 
-export async function getCurrentUser(): Promise<SessionUser | null> {
-  const session = await auth.api.getSession({
-    headers: await headers(),
-  })
+// cache() makes the session lookup run once per request, even though the
+// dashboard layout and the page both call it.
+export const getCurrentUser = cache(
+  async (): Promise<SessionUser | null> => {
+    const session = await auth.api.getSession({
+      headers: await headers(),
+    })
 
-  if (!session) {
-    return null
+    if (!session) {
+      return null
+    }
+
+    return session.user as SessionUser
   }
-
-  return session.user as SessionUser
-}
+)
 
 
 
